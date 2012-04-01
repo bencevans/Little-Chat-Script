@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chat Server</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+	<style type="text/css">
+	body {
+		margin:40px 0 0 0;
+		background-color:#fff;
+		color:#333;
+	}
+	.statictop {
+		position: fixed;
+		top:0;
+		width:100%;
+	}
+	header {
+		width:720px;
+		margin:auto;
+		padding:10px;
+		box-shadow:0 0 5px black;
+		background-color:#fff;
+	}
+	.status.connected {	color:green; }
+	.status.connecting { color:orange; }
+
+	.container {
+		width:720px;
+		background-color:#fff;
+		margin:auto;
+		min-height:90%;
+		box-shadow:0 0 5px black;
+	}
+	.avatar {
+		float:left;
+		padding:10px;
+		background-color:#eee;
+		min-height:10px;
+		width:80px;
+	}
+	.message {
+		height:100%;
+		padding:10px;
+		margin-left:100px;
+	}
+	.servermessage {
+		background-color:#D0DEFF;
+		padding:10px;
+	}
+	.messageinput {
+		width:698px;
+		padding:10px;
+		border:1px solid #ccc;
+		margin:0 0 0;
+		box-shadow: 0 0 5px black;
+	}
+	footer {
+		width:720px;
+		margin:auto;
+	}
+	</style>
+</head>
+<body>
+	<div class="statictop">
+		<header>
+			<input type="text" placeholder="Name" class="nameinput"/> Status: <span class="status">Loading</span>
+		</header>
+	</div>
+	<div class="container">
+		<div class="messages">
+		</div>
+	</div>
+	<footer>
+		<form>
+			<input type="text" placeholder="Message... and Hit Enter" class="messageinput"/>
+		</form>
+	</footer>
+	<script type="text/javascript">
+
+	var socket = io.connect();
+
+	socket.on('connecting', function () {
+		console.log('connecting');
+		$('.status').html('Connecting');
+		$('.status').addClass('connecting');
+	});
+
+	socket.on('connect', function () {
+		console.log('connected');
+		$('.status').html('Connected');
+		$('.status').addClass('connected');
+		$('.status').removeClass('connecting');
+	});
+
+	socket.on('message', message);
+	socket.on('servermessage', servermessage);
+	socket.on('reconnect', function () {
+		console.log('reconect');
+	});
+
+	socket.on('reconnecting', function () {
+		console.log('reconect');
+	});
+
+
+
+	socket.on('error', function (e) {
+		console.log('error');
+	});
+
+	function message (data) {
+		console.log(data);
+		$('.messages').append('<div class="message-block"><div class="avatar">' + data['message']['name'] + '</div><div class="message">' + data['message']['message'] + '</div>	<div style="clear:both;"></div></div>');
+
+		window.scrollTo(0,document.body.scrollHeight);
+	}
+
+	function servermessage (data) {
+		console.log(data);
+		data = data.replace('\n', '<br/>');
+		data = data.replace(' ', '&nbsp;');
+		$('.messages').append('<div class="servermessage"><pre>' + data + '</pre></div>');
+	}
+
+      // dom manipulation
+      $(function () {
+
+
+      	$('form').submit(function () {
+      		if(!$('.nameinput').val()) {alert('you have no name set');}
+      		else if (!$('.messageinput').val()) {}	else {
+      			socket.emit('message', {message: $('.messageinput').val(), name: $('.nameinput').val()});
+      			message({message : {message: $('.messageinput').val(), name: $('.nameinput').val()}});
+      			$('.messageinput').val('').focus();
+      		}
+      		return false;
+      	});
+
+      });
+
+
+      </script>
+  </body>
+  </html>
