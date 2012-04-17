@@ -1,17 +1,10 @@
 var app = require('http').createServer(handler)
 , io = require('socket.io').listen(app)
-, fs = require('fs')
+, fs = require('fs');
 
 app.listen(8080);
 
 
-io.set('transports', [
-        'websocket',
-        'flashsocket',
-        'htmlfile',
-        'xhr-polling',
-        'jsonp-polling'
-        ]);
 
 
 function handler (req, res) {
