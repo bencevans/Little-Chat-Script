@@ -1,0 +1,18 @@
+{
+  "author": "Ben Evans (http://bensbit.co.uk)",
+  "name": "Little-Chat-Script",
+  "description": "A very basic chat application written in node.js using socket.io for transport",
+  "version": "0.0.1",
+  "homepage": "https://github.com/bencevans/Little-Chat-Script",
+  "repository": {
+    "url": "git@github.com:bencevans/Little-Chat-Script.git"
+  },
+  "dependencies": {
+    "socket.io": "0.9.6"
+    },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
